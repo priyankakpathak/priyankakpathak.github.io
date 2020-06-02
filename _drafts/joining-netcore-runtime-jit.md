@@ -1,0 +1,1 @@
+# Experience about joining .NET core runtime's JIT team
