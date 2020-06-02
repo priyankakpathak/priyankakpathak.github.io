@@ -1,13 +1,13 @@
 # --- Basic options --- #
 
 # Name of website
-title: My website
+title: Kunal S. Pathak blogs
 
 # Short description of your site
 description: A virtual proof that I'm awesome
 
 # Your name to show in the footer
-author: Some Person
+author: Kunal Pathak
 
 # --- List of links in the navigation bar --- #
 
@@ -16,13 +16,13 @@ navbar-links:
   Resources:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
     - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+  # Author's home: "https://deanattali.com"
 
 # --- Logo --- #
 
 # Image to show in the navigation bar - works best with a square image
 # Remove this parameter if you don't want an image in the navbar
-avatar: "/assets/img/avatar-icon.png"
+avatar: "/assets/img/Kunal-Pathak.jpg"
 
 # By default, the image is cut into a circle. You can disable this behaviour here.
 round-avatar: true
@@ -39,12 +39,12 @@ round-avatar: true
 # If you don't want to show a link to an RSS feed, set rss to "false".
 social-network-links:
   email: "someone@example.com"
-  facebook: deanattali
-  github: daattali
-  twitter: daattali
+  # facebook: deanattali
+  github: kunalspathak
+  twitter: kuxmlp
   rss: true
 #  reddit: yourname
-#  linkedin: daattali
+  linkedin: kunalspathak
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
@@ -119,7 +119,7 @@ footer-link-col: "#404040"
 # --- Comments --- #
 
 # To use Disqus comments, sign up to https://disqus.com and fill in your Disqus shortname (NOT the userid)
-#disqus: ""
+disqus: "https-kunalspathak-github-io-kp-blogs"
 
 # To use Facebook Comments, create a Facebook app and fill in the Facebook App ID
 #fb_comment_id: ""
@@ -183,7 +183,7 @@ defaults:
       layout: "post"
       comments: true  # add comments to all blog posts
       social-share: true # add social media sharing buttons to all blog posts
-      readtime: false # add estimated reading time on all blog posts
+      readtime: true # add estimated reading time on all blog posts
   -
     scope:
       path: "" # all files
