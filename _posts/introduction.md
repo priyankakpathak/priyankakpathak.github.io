@@ -1,0 +1,1 @@
+bloggin in covid-19 while saving commute time approx. 30 mins / day or 2.5 hours / week.
