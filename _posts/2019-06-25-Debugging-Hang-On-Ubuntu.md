@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Debugging a hang on Ubuntu
-subtitle: Lessons learned while porting node-chakracore to ubuntu
-cover-img: /assets/img/path.jpg
-tags: [ubuntu, assembly]
+subtitle: Tale of a bug in node-chakracore(ubuntu)
+# cover-img: /assets/img/ubuntu-hang.jpg
+tags: [ubuntu, debugging]
 ---
 
 In this post I will talk about a hang that we started noticing after enabling JIT for [node-chakracore](https://github.com/nodejs/node-chakracore) in Ubuntu. Before debugging for this hang, I had never worked on Ubuntu (forget about debugging) and the only knowledge I had was from what I learnt in `Unix programming` back in school. Here I will share my experience in debugging a bug on a new platform, how I approached this bug, what things I read to understand what is going on and finally how I solved it. During investigation I read about concepts that were later found to be unnecessary, however reading about it had added those concepts in my knowledge base which will definitely prove to be beneficial in future.
@@ -65,6 +65,6 @@ At this point, I knew that I need to put breakpoint at `sigmask()` and `pthread_
 
 I thought of opening an issue on [dotnet/coreclr](https://github.com/dotnet/coreclr/), but realized that this was issue was already fixed in [dotnet/coreclr#4863](https://github.com/dotnet/coreclr/pull/4863). So I just had to [cherry-pick](https://github.com/Microsoft/ChakraCore/pull/1795) these changes in chakracore and that would stop `node-chakracore` from hanging in simple repro case.
 
-If you have reached this point, I am very grateful that you read this far. I hope this post will give you insights on how you can debug through complex and weird bugs on completely new platform.
+If you have reached this point, I am very grateful that you read this far. I hope this post will give you insights on how you can debug through complex and weird bugs on completely new platform. Feel free to send comments/questions/feedback.
 
-Feel free to send comments/questions/feedback.
+Namaste!
