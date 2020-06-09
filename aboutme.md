@@ -17,7 +17,7 @@ The opinions stated here are my own, not necessarily those of my employer.
 
 As a software engineer, I have spent almost half of my life in front of computer.
 
-<img align="right" width="15%" height="15%" src="/assets/img/Microsoft.png" /> <b> Software Engineer (2009 - present) </b>
+<img align="right" width="15%" height="15%" src="/assets/img/Microsoft.png" /> <u>Software Engineer (2009 - present)</u>
 
 
  * <b>.NET Runtime</b>: As part of JIT team, my focus currently is optimizing .NET 5 for ARM64. This involves doing perforamnce analysis of generated assembly code for ARM64 and comparing and contrasting it against Intel x64. The [epic issue](https://github.com/dotnet/runtime/issues/35853) highlights some of the improvement areas that I found.
@@ -31,7 +31,7 @@ As a software engineer, I have spent almost half of my life in front of computer
 and manageability of that product. Back then, the product acted as a backend for popular services like Hotmail, Address book and Skype.
 
 
-<img align="right" width="10%" height="10%" src="/assets/img/Infosys.jpg" /> <b> Software Engineer (2004 - 2007) </b>
+<img align="right" width="10%" height="10%" src="/assets/img/Infosys.jpg" /> <u> Software Engineer (2004 - 2007) </u>
 
 I joined Infosys, India straight out of college. It was lot of learning here, not only on technical front but also on etiquettes on working in corporate world. I was part of a MVC architecture based project to build quoting system for an insurance company using J2EE, JSP, Javascript, Servlets and SQL database. Here, I also played a role of an onsite coordinator at client site in US to walk through the requirements, project estimates, coordinating development with offshore team.
 
@@ -39,7 +39,7 @@ I joined Infosys, India straight out of college. It was lot of learning here, no
 
 With strong inclination towards computers from early age, I pursued my education in Computer Science.
 
-<img align="right" width="12%" height="5%" src="/assets/img/rit.png" /> <b> Master's degree (2007 - 2009) </b>
+<img align="right" width="12%" height="5%" src="/assets/img/rit.png" /> <u> Master's degree (2007 - 2009) </u>
 
 Pursuing a US degree was a unique experience for me under the guidance of [Dr. James Heliotis](https://www.cs.rit.edu/~jeh/). My majors was in Programming Language and its worth mentioning some of the interesting projects I worked on.
 * AspectJ - Developed an interface for [AspectJ 1.5](https://www.eclipse.org/aspectj/) using [BCEL](https://commons.apache.org/proper/commons-bcel/) to give the weaving ability inside iteration loops during load-time.
@@ -48,7 +48,7 @@ Pursuing a US degree was a unique experience for me under the guidance of [Dr. J
 
 * uXML - [uXML](https://github.com/kunalspathak/uxml) was an experiment to analyze the structure and syntax of popular programming paradigms viz. functional, object-oriented and imperative languages and design a universal language which can represent as much possible, the semantics of programming languages that are written in these paradigms. Due to gamut of parsing tools available to process XML files, the intermediate language is in XML format. Thus the uXML format will be more readable than any other intermediate format.
 
-<img align="right" width="10%" height="5%" src="/assets/img/vit.png" /> <b> Bachelor's degree (2000 - 2004) </b>
+<img align="right" width="10%" height="5%" src="/assets/img/vit.png" /> <u> Bachelor's degree (2000 - 2004) </u>
 
 Most of my computer science foundation was built at one of the prestigious college "Vishwakarma Institute of Technology" of a prestigious "Pune University" of India. Here I learned Computer Science fundamentals, introduction to various programming languages like Basic, Pascal, C, C++, COBOL, Java and assembly language.
 
