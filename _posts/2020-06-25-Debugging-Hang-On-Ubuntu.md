@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Debugging a hang on Ubuntu
-subtitle: Tale of a bug in node-chakracore(ubuntu)
+subtitle: Tale of a bug while porting node-chakracore to ubuntu
 # cover-img: /assets/img/ubuntu-hang.jpg
 tags: [ubuntu, debugging]
 ---
