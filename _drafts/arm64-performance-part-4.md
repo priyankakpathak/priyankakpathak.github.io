@@ -1,1 +1,0 @@
-virtual calls and indirect calls

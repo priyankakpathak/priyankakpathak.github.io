@@ -1,1 +1,1 @@
-peephole optimizer and analyzeasm what found.
+virtual stub and indirect cell address
