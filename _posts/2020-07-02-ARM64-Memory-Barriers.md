@@ -2,13 +2,14 @@
 layout: post
 title: Memory barriers in ARM64
 subtitle: The cost of weakly-ordered memory model
-tags: [arm64, performance, debugging, work]
+tags: [arm64, performance, debugging, assembly, work]
 comments: true
 ---
 
 This is the 2nd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read the previous blog at [Part 1 - ARM64 performance of .Net Core](..\2020-06-30-Dotnet-Arm64-Performance).
 
-In this post, I will describe the implication of weakly-ordered memory model of ARM64 on generated code by .NET.
+In this post, I will describe the implication of weakly-ordered memory model of ARM64 on generated code by .NET and how we got some good wins in ARM64 for some methods present in `System.Collections.Concurrent.ConcurrentDictionary`.
+
 
 ### Memory ordering
 
@@ -50,12 +51,63 @@ Although this guarantees the memory ordering, there is a cost for it. The proces
 
 ### System.Collection.Concurrent.ConcurrentDictionary
 
-While going through the benchmarks that are slower on ARM64, I noticed that [a simple benchmark](https://github.com/dotnet/performance/blob/master/src/benchmarks/micro/libraries/System.Collections/Concurrent/Count.cs#L37) that gets the count of number of items stored inside `System.Collection.Concurrent.ConcurrentDictionary` was slower. On inspecting [GetCountInternal](https://github.com/dotnet/runtime/blob/0f834db1fd80cf82e5ef27f72c48af1c911775da/src/libraries/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs#L1005), I noticed that there was an access of `volatile` variable inside a loop. That means, for ARM64 we were executing memory barriers inside a loop. Interesting part was that this was despite the fact that [appropriate locks](https://github.com/dotnet/runtime/blob/0f834db1fd80cf82e5ef27f72c48af1c911775da/src/libraries/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs#L974) were already taken before the start of loop. More details can be seen in [this issue](https://github.com/dotnet/runtime/issues/34198). If I just hoist the access of `volatile` variable outside the loop, that would be a tremendous win. A simple proof of concept showed that `GetCountInternal()` would improve by <b>30%</b>. That's a huge win. The [fix to hoist volatile variable access out of loop](https://github.com/dotnet/runtime/pull/34225) was merged. In it, I was able to also hoist the access for some other methods `CopyTo`, `GetKeys` and `GetValues`. I am pretty sure there are other places in .NET code base where similar code is there and someday I need to sit and scan through it to get more performance wins.
+While going through the benchmarks that are slower on ARM64, I noticed that [a simple benchmark](https://github.com/dotnet/performance/blob/master/src/benchmarks/micro/libraries/System.Collections/Concurrent/Count.cs#L37) that gets the count of number of items stored inside `System.Collection.Concurrent.ConcurrentDictionary` was slower. On inspecting [GetCountInternal](https://github.com/dotnet/runtime/blob/0f834db1fd80cf82e5ef27f72c48af1c911775da/src/libraries/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs#L1005), I noticed that there was an access of `volatile` variable `_tables` inside a loop. 
+Here is the code before it was fixed:
 
-### Summary
+```csharp
+private sealed class Tables
+{
+    // ..
+    internal volatile int[] _countPerLock; // The number of elements guarded by each lock.
+    // ..
+}
 
-If you are writing C# code targetting ARM64, make sure to double check the `volatile` variable's usage.
+private volatile Tables _tables;
 
+private int GetCountInternal()
+{
+    int count = 0;
 
+    // Compute the count, we allow overflow
+    for (int i = 0; i < _tables._countPerLock.Length; i++)
+    {
+        count += _tables._countPerLock[i];
+    }
+
+    return count;
+}
+```
+
+For this method, we generated ARM64 code having memory barrier instruction inside a loop. Here is the generated assembly code:
+
+![ARM64 code](/assets/img/memory-barrier/code-before.png){: .mx-auto.d-block :}
+
+Here, `IG03` is a loop and the 4 yellow highlighted ones inside this block are the memory barrier instructions. Each pair is present to access two `volatile` variables `_tables` and `_countPerLock` i.e. `_tables._countPerLock`. Accessing `volatile` variable in a loop is sensible because different thread can update the value inside the variable and we want to ensure that this doesn't happen while we are calculating the count. However the code already takes [appropriate locks](https://github.com/dotnet/runtime/blob/0f834db1fd80cf82e5ef27f72c48af1c911775da/src/libraries/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs#L974) before executing the `GetCountInternal()` method. With that being present, it is fine to cache the `volatile` variable value out of loop and use it inside the loop. That will change the C# code to be something like this:
+
+```csharp
+private int GetCountInternal()
+{
+    int count = 0;
+    int[] countPerLocks = _tables._countPerLock;
+
+    // Compute the count, we allow overflow
+    for (int i = 0; i < countPerLocks.Length; i++)
+    {
+        count += countPerLocks[i];
+    }
+
+    return count;
+}
+```
+
+Here is the generated ARM64 code after the change.
+
+![ARM64 code](/assets/img/memory-barrier/code-after.png){: .mx-auto.d-block :}
+
+If you see there are no more memory barrier instructions inside the loop now. This simple change gave approxiametely <b>30%</b> win in the corresponding benchmark. The [fix to hoist volatile variable access out of loop](https://github.com/dotnet/runtime/pull/34225) was merged. In it, I was able to also hoist the access for some other methods `CopyTo`, `GetKeys` and `GetValues`. I am pretty sure there are other places in .NET code base where similar code is there and someday I need to sit and scan through it to get more performance wins.
+
+### Conclusion
+
+To summarize, C# developer should pay careful attention while using various locking APIs or language features such as `volatile`. They come with a cost and different architecture have different cost. Thorough code review and questioning the code you write is the key to write efficient code for cross-architecture.
 
 Namaste!
