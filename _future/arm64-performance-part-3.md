@@ -1,1 +1,0 @@
-virtual stub and indirect cell address
