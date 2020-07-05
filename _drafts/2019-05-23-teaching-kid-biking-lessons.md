@@ -93,3 +93,5 @@ That gives her confidence of stopping with TWs. I push her to make the bike go f
 ### Finally
 
 My daughter knows how to bike end-to-end independently. After few days, I realized that I should have googled to see "how long does it take to learn to ride a bike" and the answer was 30~45 minutes. We took longer than that. We spent 30 minutes every day for 6 days and that was about 3 hours to learn. But I will never forget those 3 hours. At the end of those 6 days, I felt happier than what I felt when I learned biking. Not only I spent quality time with her, but I realized that it needed lot of creativity, impromptu and humorous thinking to explain her things and giving several analogies and examples. I made sure that her morale is boosted, and she is excited all those days to go to learn biking. And the outcome is my daughter and I can go to a trail on our own bikes.
+
+  <img align="center" width="70%" height="70%" src="/assets/img/biking/final.jpeg" />
