@@ -6,7 +6,7 @@ tags: [arm64, performance, assembly, work]
 comments: true
 ---
 
-This is the 3rd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read the previous blogs at:
+This is the 3rd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read previous blogs at:
 *  [Part 1 - ARM64 performance of .Net Core](..\2020-06-30-Dotnet-Arm64-Performance).
 *  [Part 2 - Memory barriers in ARM64](..\2020-07-02-ARM64-Memory-Barriers).
 
@@ -19,7 +19,7 @@ In this post, I will describe an important compiler phase "peephole optimization
 
 Below is the generated code for C#'s `HashSet.Contains()` [method](https://github.com/dotnet/runtime/blob/6c2f5feef38c8561f54fc2aeeab00ba95a5c9d38/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/HashSet.cs#L199):
 
-```asm
+{% highlight asm linenos %}
         ...
         52800016          mov     w22, #0
         F9400A77          ldr     x23, [x19,#16]      
@@ -28,11 +28,11 @@ Below is the generated code for C#'s `HashSet.Contains()` [method](https://githu
         B4000174          cbz     x20, G_M49529_IG04
         AA1403E0          mov     x0, x20
         ...
-```
+{% endhighlight %}
 
 Here, there are two `ldr` instructions that loads 64-bit values from memory `[x19 + 16]` and `[x19 + 24]` into `x23` and `x24` registers respectively. Thus after execution, `x23` will contain 8-bytes from memory location `[x19+16]` thru `[x19+23]` and `x24` will contain 8-bytes from memory location `[x19+24]` thru `[x19+31]`. If you refer the [ARM software optimization guide](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiGs9brqZPqAhX7JTQIHZvcAkAQFjAAegQIBRAC&url=https%3A%2F%2Fstatic.docs.arm.com%2Fswog307215%2Fa%2FArm_Cortex-A76_Software_Optimization_Guide.pdf&usg=AOvVaw2fSA7Vv6dOhvguevnFdP1e), the latency for `ldr` instruction is 4 cycles. So two instructions takes 8 cycles to complete the loading of 128-bit data from memory into registers. Is it possible to replace these two instructions with a cheaper instructions? `ldp` instruction on the other hand loads pair of 64-bit registers from memory. The latency of `ldp` is 4 cycles which is same as single `ldr` instruction. So above two `ldr` instructions can be replaced with a single `ldp` instruction to get the same values in registers `x23` and `x24`.
 
-```asm
+{% highlight asm linenos %}
         ...
         52800016          mov     w22, #0
         F9400A77          ldp     x23, x24, [x19,#16] # <-- replacement
@@ -40,7 +40,7 @@ Here, there are two `ldr` instructions that loads 64-bit values from memory `[x1
         B4000174          cbz     x20, G_M49529_IG04
         AA1403E0          mov     x0, x20
         ...
-```
+{% endhighlight %}
 
 In this example, the compiler, while scanning the generated code, can notice that there are two `ldr` instructions back to back such that they load the data from subsequent memory location and replace it with cheaper (in this case fewer cycles taking) `ldp` instruction. It should be cautious that if the two `ldr` don't get replaced if memory location is not consecutive. 
 
@@ -68,31 +68,31 @@ This optimization opportunity is similar to the one above except that instead of
 
 The following code
 
-```asm
+{% highlight asm linenos %}
 str     x13, [x12]
 str     x14, [x12,#8]
-```
+{% endhighlight %}
 
 can be optimized to 
 
-```asm
+{% highlight asm linenos %}
 stp x13, x14, [x12]
-```
+{% endhighlight %}
 
 #### 3. Optimize "str wzr + str wzr" with "str xzr"
 
  `wzr` is 4-byte zero register while `xzr` is a 8-byte zero register in ARM64. If 4-byte zero value is being stored in memory location followed by another 4-byte of zero value in subsequent 4-bytes, then the pair of such instruction can be replaced with a single store of 8-byte zero value. Details in [this](https://github.com/dotnet/runtime/issues/35136) issue.
  
  The following code
- ```asm
+{% highlight asm linenos %}
 str     wzr, [x2, #8]
 str     wzr, [x2, #12]
- ```
+{% endhighlight %}
 
 can be optimized to 
- ```asm
+{% highlight asm linenos %}
 str     xzr, [x2, #8]
- ```
+{% endhighlight %}
  
 
 #### 4. Optimize redundant mov
@@ -100,15 +100,15 @@ str     xzr, [x2, #8]
  I noticed `mov` instruction pattern where a `mov` instruction was moving value from `reg1` to `reg2` and the next `mov` instruction was moving from `reg2` to `reg`. The second `mov` instruction is unnecessary and can be removed. Details in [this](https://github.com/dotnet/runtime/issues/35252) issue.
 
   The following code
- ```asm
+{% highlight asm linenos %}
 mov     x20, x2
 mov     x2, x20
- ```
+{% endhighlight %}
 
 can be optimized to 
- ```asm
+{% highlight asm linenos %}
 mov     x20, x2
- ```
+{% endhighlight %}
  
  Note: RyuJIT already optimizes and remove `mov` done between same registers i.e. `mov x0, x0`.
 
@@ -117,31 +117,31 @@ mov     x20, x2
 Another pattern that I saw was loading a value from memory location into a register and then storing that value back from the register into same memory location. The second instruction is redundant and can be removed. Likewise if there is a store followed by a load. Details in [this](https://github.com/dotnet/runtime/issues/35613) and [this](https://github.com/dotnet/runtime/issues/35614) issue.
 
   The following code
- ```asm
+{% highlight asm linenos %}
 ldr     w0, [x19, #64]
 str     w0, [x19, #64]
- ```
+{% endhighlight %}
 
 can be optimized to 
- ```asm
+{% highlight asm linenos %}
 ldr     w0, [x19, #64]
- ```
+{% endhighlight %}
 
 #### 6. Optimize memory loads with mov
 
 RyuJIT rarely generates code that will load two registers from same memory location. The second load instruction can be converted to `mov` instruction which is cheaper and doesn't need memory access. Details in [this](https://github.com/dotnet/runtime/issues/35141) issue.
 
   The following code
- ```asm
+{% highlight asm linenos %}
 ldr     w1, [fp,#28]
 ldr     w0, [fp,#28]
- ```
+{% endhighlight %}
 
 can be optimized to 
- ```asm
+{% highlight asm linenos %}
 ldr     w1, [fp,#28]
 mov     w0, w1
- ```
+{% endhighlight %}
 
 ### Conclusion
 

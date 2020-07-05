@@ -6,7 +6,7 @@ tags: [arm64, performance, debugging, assembly, work]
 comments: true
 ---
 
-This is the 2nd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read the previous blog at [Part 1 - ARM64 performance of .Net Core](..\2020-06-30-Dotnet-Arm64-Performance).
+This is the 2nd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read previous blog at [Part 1 - ARM64 performance of .Net Core](..\2020-06-30-Dotnet-Arm64-Performance).
 
 In this post, I will describe the implication of weakly-ordered memory model of ARM64 on generated code by .NET and how we got some good wins in ARM64 for some methods present in `System.Collections.Concurrent.ConcurrentDictionary`.
 
