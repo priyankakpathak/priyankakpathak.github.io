@@ -6,7 +6,7 @@ tags: [arm64, performance, assembly, work]
 comments: true
 ---
 
-This is the 3rd of the blog posts series that talks about ARM64 performance investigation for .NET core. You can read previous blogs at:
+This is the 3rd of the blog posts series that talks about ARM64 performance investigation for .NET 5. You can read previous blogs at:
 *  [Part 1 - ARM64 performance of .Net Core](..\2020-06-30-Dotnet-Arm64-Performance).
 *  [Part 2 - Memory barriers in ARM64](..\2020-07-02-ARM64-Memory-Barriers).
 

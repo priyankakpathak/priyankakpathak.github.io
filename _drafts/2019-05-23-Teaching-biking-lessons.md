@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Teaching biking to my 5 years old
+title: Teaching biking lessons to my 5 years old
 subtitle: Joy I will never forget
 cover-img: /assets/img/biking/bike.jpeg
 tags: [life, parenting]

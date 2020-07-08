@@ -22,14 +22,14 @@ For those who are not familiar with [crossgen tool](https://github.com/dotnet/co
 As mentioned in my [previous blog post](..\2020-07-04-Dotnet-Arm64-Performance), the performance investigation strategy that I followed was to inspect lot of ARM64 code and compare it against x64. I did this analysis on the code that was produced by `crossgen` tool.
 One thing that I noticed since beginning was that the code size generated for ARM64 was much bigger than that of x64. I will cover on what contributed to bigger ARM64 code size in a separate blog post. But I started investigating the benchmarks and framework library APIs whose code size is magnitude bigger on ARM64. The common pattern that was present multiple times in almost all the methods looked something like this:
 
-```asm
+{% highlight asm linenos %}
         9000000B          adrp    x11, [RELOC #0x20a0e212c50]
         9100016B          add     x11, x11, #0
         90000004          adrp    x4, [RELOC #0x20a0e212c50]
         91000084          add     x4, x4, #0
         F9400084          ldr     x4, [x4]
         D63F0080          blr     x4
-```
+{% endhighlight %}
 
 It was not obvious what this code is doing. [ARM64 manual](https://developer.arm.com/documentation/dui0802/b/A64-General-Instructions/ADRP) says that [ADRP] is a relative address from current instruction that is to be loaded in a destination register. On doing research, it turns out that .NET has its own calling covention to invoke methods during runtime. It introduces a layer called "stub" between caller and callee. Imagine "stub" as a table that containing entries to each callee. Caller jumps to the relevant entry of this "stub" table corresponding to the caller it wants to call. When binaries are compiled, the address of callee code is not known. But during runtime, when the caller invokes any method, .NET lazily evaluates the address of that method (callee code) and patch the "stub" entries with the correct address in process memory where the callee code is located. After patching, stub just forward the calls from caller to actual method code. If you are interested in knowning more, there is a great article about [stubs in .NET runtime](https://mattwarren.org/2019/09/26/Stubs-in-the-.NET-Runtime/) that you can read.
 
