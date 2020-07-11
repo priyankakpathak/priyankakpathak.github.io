@@ -3,7 +3,7 @@ layout: post
 title: Debugging a hang on Ubuntu
 subtitle: Tale of a bug while porting node-chakracore to ubuntu
 # cover-img: /assets/img/ubuntu-hang.jpg
-tags: [ubuntu, debugging]
+tags: [ubuntu, debugging, work]
 ---
 
 This is the blog post that I [wrote 4 years back](https://github.com/kunalspathak/kunalsblog/blob/master/_posts/2016-11-04-Debugging-Hang-On-Ubuntu.md) but never published it. Well, better to be late than never.
