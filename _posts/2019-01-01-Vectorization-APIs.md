@@ -1,19 +1,19 @@
 ---
 layout: post
-title: Hardware Intrinsics APIs for ARM64
-subtitle: With examples
+title: Vectorization using .NET APIs
+subtitle: Vector64&lt;T&gt; and Vector128&lt;T&gt;
 tags: [work, arm64, intrinsics]
 ---
 
 
 ### Introduction
 
-It has been few years now that [.NET added SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature "Hardware intrinsics" added various APIs under `System.Runtime.Intrinsics` and `System.Runtime.Intrinsics.X86` for Intel x86/x64 architecture. You can read more about it in [this excellent blog](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) from Tanner.
+It has been few years now that [.NET added SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature ["hardware intrinsics"](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) was introduced. This feature gives access to various vectorized and non-vectorized hardware instructions that modern hardware support. .NET developers can access these instructions using set of APIs under `System.Runtime.Intrinsics` and `System.Runtime.Intrinsics.X86` for Intel x86/x64 architecture. In .NET Core 5.0, APIs are added under `System.Runtime.Intrinsics.Arm` for ARM architecture. 
+
+`Vector64<T>`, `Vector128<T>` and `Vector256<T>` data types represents vectorized data of size 64, 128 and 256 bits respectively and are the ones on which majority of these intrinsic APIs operate on. `Vector128<T>` and `Vector256<T>` are used for Intel instructions while `Vector64<T>` and `Vector128<T>` operates on ARM instructions. In this post, I will describe about the data types that operate on ARM64.
 
 
-### Vector64 and Vector128
-
-Vector128
+### Vector128
 
 ```cmd
         ------------------------------128-bits---------------------------
@@ -38,7 +38,7 @@ Vector128
 
 - `V0.16B` : Holds 16 8-bits values of type `byte` or `sbyte`, They are represented by `Vector128<byte>` and `Vector128<sbyte>`respectively.
 
-Vector64
+### Vector64
 
 
 ```cmd
@@ -108,102 +108,25 @@ data:                          1301839424133073931
 ```
 
 
-Let us take a look in how these values are represented. 
-
 ### APIs examples
 
-#### `Vector128<ulong> Abs(Vector128<long> value)`
+#### `Vector64<byte> Create(byte value)`
+
+Creates a `Vector64<byte>` with all elements initialized to `value`.
 
 ```csharp
-
+Vector64<byte> data = Vector64.Create((byte)5);
+Console.WriteLine(data);
+// <5, 5, 5, 5, 5, 5, 5, 5>
 ```
 
 
-Abs
-AbsoluteCompareGreaterThan
-AbsoluteCompareGreaterThanOrEqual
-AbsoluteCompareGreaterThanOrEqualScalar
-AbsoluteCompareGreaterThanScalar
-AbsoluteCompareLessThan
-AbsoluteCompareLessThanOrEqual
-AbsoluteCompareLessThanOrEqualScalar
-AbsoluteCompareLessThanScalar
-AbsoluteDifference
-AbsoluteDifferenceScalar
-AbsScalar
-Add
-AddAcross
-AddPairwise
-AddPairwiseScalar
-AddScalar
-And
-BitwiseClear
-BitwiseSelect
-CompareEqual
-CompareEqualScalar
-CompareGreaterThan
-CompareGreaterThanOrEqual
-CompareGreaterThanOrEqualScalar
-CompareGreaterThanScalar
-CompareLessThan
-CompareLessThanOrEqual
-CompareLessThanOrEqualScalar
-CompareLessThanScalar
-CompareTest
-CompareTestScalar
-Divide
-DivideScalar
-FusedMultiplyAdd
-FusedMultiplyAddNegatedScalar
-FusedMultiplyAddScalar
-FusedMultiplySubtract
-FusedMultiplySubtractNegatedScalar
-FusedMultiplySubtractScalar
-LeadingSignCount
-LeadingZeroCount
-LoadVector128
-LoadVector64
-Max
-MaxAcross
-MaxNumber
-MaxNumberAcross
-MaxNumberPairwise
-MaxNumberPairwiseScalar
-MaxNumberScalar
-MaxPairwise
-MaxPairwiseScalar
-MaxScalar
-Min
-MinAcross
-MinNumber
-MinNumberAcross
-MinNumberPairwise
-MinNumberPairwiseScalar
-MinNumberScalar
-MinPairwise
-MinPairwiseScalar
-MinScalar
-Multiply
-MultiplyAdd
-MultiplyScalar
-MultiplySubtract
-Negate
-NegateScalar
-Not
-Or
-OrNot
-PopCount
-ReverseElementBits
-Sqrt
-SqrtScalar
-Subtract
-SubtractScalar
-TransposeEven
-TransposeOdd
-UnzipEven
-UnzipOdd
-Xor
-ZipHigh
-ZipLow
+#### `Vector<byte> Create(byte e0, byte e1, byte e2, byte e3, byte e4, byte e5, byte e6, byte e7)`
 
+Creates a `Vector64<byte>` with elements initialized to `e0`, `e1`,...., `e7`.
 
+```csharp
+Vector64<byte> data = Vector64.Create((byte)24, 25, 26, 27, 28, 29, 30, 31);
+Console.WriteLine(data);
+// <24, 25, 26, 27, 28, 29, 30, 31>
+```
