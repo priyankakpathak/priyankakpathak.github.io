@@ -1,21 +1,22 @@
 ---
 layout: post
 title: Vectorization using .NET APIs
-subtitle: Vector64&lt;T&gt; and Vector128&lt;T&gt;
+subtitle: Vector64&lt;T&gt;, Vector128&lt;T&gt; and Vector256&lt;T&gt;
 tags: [work, arm64, intrinsics]
 ---
 
 
 ### Introduction
 
-It has been few years now that [.NET added SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature ["hardware intrinsics"](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) was introduced. This feature gives access to various vectorized and non-vectorized hardware instructions that modern hardware support. .NET developers can access these instructions using set of APIs under `System.Runtime.Intrinsics` and `System.Runtime.Intrinsics.X86` for Intel x86/x64 architecture. In .NET Core 5.0, APIs are added under `System.Runtime.Intrinsics.Arm` for ARM architecture. 
+It has been few years now that [.NET added SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature ["hardware intrinsics"](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) was introduced. This feature gives access to various vectorized and non-vectorized hardware instructions that modern hardware support. .NET developers can access these instructions using set of APIs under namespace `System.Runtime.Intrinsics` ([msdn](https://docs.microsoft.com/en-us/dotNet/api/system.runtime.intrinsics?view=net-5.0)) and `System.Runtime.Intrinsics.X86` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.x86?view=net-5.0)) for Intel x86/x64 architecture. In .NET Core 5.0, APIs are added under `System.Runtime.Intrinsics.Arm` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.arm?view=net-5.0)) for ARM architecture. 
 
-`Vector64<T>`, `Vector128<T>` and `Vector256<T>` data types represents vectorized data of size 64, 128 and 256 bits respectively and are the ones on which majority of these intrinsic APIs operate on. `Vector128<T>` and `Vector256<T>` are used for Intel instructions while `Vector64<T>` and `Vector128<T>` operates on ARM instructions. In this post, I will describe about the data types that operate on ARM64.
+`Vector64<T>`, `Vector128<T>` and `Vector256<T>` data types represents vectorized data of size 64, 128 and 256 bits respectively and are the ones on which majority of these intrinsic APIs operate on. `Vector128<T>` and `Vector256<T>` are used for Intel instructions while `Vector64<T>` and `Vector128<T>` operates on ARM instructions.
 
-TODO: Intent is to show examples
-
+For new .NET developer, it can be challenging to understand the underlying concept on top of which these APIs are built, specially if they have never worked on "Single instruction, multiple data" ([SIMD](https://en.wikipedia.org/wiki/SIMD)). I faced those challenges too. This post will explain these .NET SIMD datatypes and then give example usage of each .NET API present on them. Since the usage can be easily seen on MSDN, I will also provide the outcome that can be accomplished by each API which will make it easier to grasp their intent. I will mostly focus on `Vector64<T>` APIs (and sometimes `Vector128<T>`) but it should be also applicable for `Vector256<T>`.
 
 ### Vector128
+
+`Vector128` datatype holds data of 128 bits. You can interpret those 128 bits as 16 8-bits, 8 16-bits 4 32-bits, or 2 64-bits value. Below is the pictorial representation.
 
 ```cmd
         ------------------------------128-bits---------------------------
@@ -40,8 +41,11 @@ TODO: Intent is to show examples
 
 - `V0.16B` : Holds 16 8-bits values of type `byte` or `sbyte`, They are represented by `Vector128<byte>` and `Vector128<sbyte>`respectively.
 
+Note: `V0` above is a register to demonstrate how they are represened in disassembly of ARM64.
+
 ### Vector64
 
+`Vector64` datatype on the other hand holds data of 64 bits. You can interpret those 64 bits as 8 8-bits, 4 16-bits 2 32-bits, or 1 64-bits value. Below is the pictorial representation.
 
 ```cmd
                                         ------------- 64-bits -----------
@@ -66,6 +70,8 @@ TODO: Intent is to show examples
 
 - `V19.8B` : Holds 8 8-bits values of type `byte` or `sbyte`, They are represented by `Vector64<byte>` and `Vector128<sbyte>`respectively.
 
+Note: `V19` above is a register to demonstrate how they are represened in disassembly of ARM64.
+
 ### Data representation
 
 Let us understand how the data is interpreted in various data types. We will take an example of `Vector64` but is applicable to `Vector128` as well.
@@ -79,7 +85,7 @@ lane:     0           1         2          3         4           5          6   
 data:     11          12        13         14          15         16         17         18 
 ```
 
-However, same data can be interpreted in 4 16-bits as `<3083, 3597, 4111, 4625>`.
+However, same data can be interpreted in 4 16-bits as `<3083, 3597, 4111, 4625>`. Note that value `00001011` and `00001100` above at index `0` and `1` respectively are combined below to `00001100 00001011` at index `0`.
 
 ```cmd
 lane:          0                  1                   2                 3          
@@ -196,6 +202,7 @@ Vector64<byte> data = Vector64.CreateScalarUnsafe((byte)11);
 Console.WriteLine(data);
 // <11, 0, 0, 0, 0, 0, 0, 0>
 ```
+Although here, remaining elements are zero, but it is not guaranteed. It can have any value based on previous operation on the register that holds the newly created `Vector64<byte>`. First element however will always be set to the `value`.
 
 Similar APIs that operate on different sizes:
 
@@ -240,7 +247,7 @@ See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.run
 
 ------
 
-`7. T ToScalar<T> ()`
+`7. T ToScalar<T> (this Vector64<T> vector)`
 
 Converts the vector to scalar by returning value of first element.
 
@@ -254,9 +261,9 @@ See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.run
 
 ------
 
-`8. Vector128<T> ToVector128<T> ()`
+`8. Vector128<T> ToVector128<T> (this Vector64<T> vector)`
 
-Creates a `Vector128<T>` with lower 64-bits initialized to this vector and upper 64-bits initialized to zero.
+Creates a `Vector128<T>` with lower 64-bits initialized to this `vector` and upper 64-bits initialized to zero.
 
 ```csharp
 Vector64<byte> inputs = Vector64.Create((byte)11, 12, 13, 14, 15, 16, 17, 18);
@@ -269,7 +276,7 @@ See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.run
 
 ------
 
-`9. Vector128<T> ToVector128Unsafe<T> ()`
+`9. Vector128<T> ToVector128Unsafe<T> (this Vector64<T> vector)`
 
 Creates a `Vector128<T>` with lower 64-bits initialized to this vector and upper 64-bits remain uninitialized.
 
@@ -280,11 +287,14 @@ Console.WriteLine(input128);
 // <11, 12, 13, 14, 15, 16, 17, 18, 0, 0, 0, 0, 0, 0, 0, 0>
 ```
 
+Similar to `CreateScalarUnsafe()`, the upper 64-bits are not guaranteed to remain zero. They can have any value based on previous operation on the register that holds the newly created `Vector128<byte>`. Lower 64-bite however will always be set to the `vector`.
+
+
 See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.vector64.tovector128unsafe?view=netcore-3.1).
 
 ------
 
-`10. Vector64<ushort> AsUInt16<T> ()`
+`10. Vector64<ushort> AsUInt16<T> (this Vector64<T> vector)`
 
 Reinterprets a `Vector64<T>` as new `Vector64` of type `ushort`.
 
@@ -313,7 +323,7 @@ See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.run
 
 ------
 
-`11. Vector64<U> As<T, U>()`
+`11. Vector64<U> As<T, U>(this Vector64<T> vector)`
 
 Reinterprets a `Vector64<T>` as new `Vector64` of type `U`.
 
@@ -388,3 +398,6 @@ Console.WriteLine(newly);
 
 See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.vector128.withupper?view=netcore-3.1).
 
+SIMD is very powerful for algorithms that does vectorized operations. I will talk about hardware intrisic APIs where these datatypes are used in future blog.
+
+Namaste!
