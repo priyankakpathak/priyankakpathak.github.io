@@ -8,11 +8,11 @@ tags: [work, arm64, intrinsics]
 
 ### Introduction
 
-It has been few years now that [.NET added SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature ["hardware intrinsics"](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) was introduced. This feature gives access to various vectorized and non-vectorized hardware instructions that modern hardware support. .NET developers can access these instructions using set of APIs under namespace `System.Runtime.Intrinsics` ([msdn](https://docs.microsoft.com/en-us/dotNet/api/system.runtime.intrinsics?view=net-5.0)) and `System.Runtime.Intrinsics.X86` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.x86?view=net-5.0)) for Intel x86/x64 architecture. In .NET Core 5.0, APIs are added under `System.Runtime.Intrinsics.Arm` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.arm?view=net-5.0)) for ARM architecture. 
+It has been few years now that .NET have added [SIMD support](https://devblogs.microsoft.com/dotnet/the-jit-finally-proposed-jit-and-simd-are-getting-married/). Last year, in .NET Core 3.0, a new feature ["hardware intrinsics"](https://devblogs.microsoft.com/dotnet/hardware-intrinsics-in-net-core/) was introduced. This feature gives access to various vectorized and non-vectorized hardware instructions that modern hardware support. .NET developers can access these instructions using set of APIs under namespace `System.Runtime.Intrinsics` ([msdn](https://docs.microsoft.com/en-us/dotNet/api/system.runtime.intrinsics?view=net-5.0)) and `System.Runtime.Intrinsics.X86` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.x86?view=net-5.0)) for Intel x86/x64 architecture. In .NET Core 5.0, APIs are added under `System.Runtime.Intrinsics.Arm` ([msdn](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.arm?view=net-5.0)) for ARM architecture. 
 
-`Vector64<T>`, `Vector128<T>` and `Vector256<T>` data types represents vectorized data of size 64, 128 and 256 bits respectively and are the ones on which majority of these intrinsic APIs operate on. `Vector128<T>` and `Vector256<T>` are used for Intel instructions while `Vector64<T>` and `Vector128<T>` operates on ARM instructions.
+`Vector64<T>`, `Vector128<T>` and `Vector256<T>` data types represent vectorized data of size 64, 128 and 256 bits respectively and are the ones on which majority of these intrinsic APIs operate on. `Vector128<T>` and `Vector256<T>` are used for Intel instructions while `Vector64<T>` and `Vector128<T>` operates on ARM instructions.
 
-For new .NET developer, it can be challenging to understand the underlying concept on top of which these APIs are built, specially if they have never worked on "Single instruction, multiple data" ([SIMD](https://en.wikipedia.org/wiki/SIMD)). I faced those challenges too. This post will explain these .NET SIMD datatypes and then give example usage of each .NET API present on them. Since the usage can be easily seen on MSDN, I will also provide the outcome that can be accomplished by each API which will make it easier to grasp their intent. I will mostly focus on `Vector64<T>` APIs (and sometimes `Vector128<T>`) but it should be also applicable for `Vector256<T>`.
+For new .NET developer, it can be challenging to understand the underlying concept on top of which these APIs are built, especially if they have never worked on "Single instruction, multiple data" ([SIMD](https://en.wikipedia.org/wiki/SIMD)). I faced those challenges too. This post will explain these .NET SIMD datatypes and then give example usage of each .NET API present on them. Since the usage can be easily seen on MSDN, I will also provide the outcome that can be accomplished by each API which will make it easier to grasp their intent. I will mostly focus on `Vector64<T>` APIs (and sometimes `Vector128<T>`) but it should be also applicable for `Vector256<T>`.
 
 ### Vector128
 
@@ -41,11 +41,11 @@ For new .NET developer, it can be challenging to understand the underlying conce
 
 - `V0.16B` : Holds 16 8-bits values of type `byte` or `sbyte`, They are represented by `Vector128<byte>` and `Vector128<sbyte>`respectively.
 
-Note: `V0` above is a register to demonstrate how they are represened in disassembly of ARM64.
+Note: `V0` above is a register to demonstrate how they are represented in disassembly of ARM64.
 
 ### Vector64
 
-`Vector64` datatype on the other hand holds data of 64 bits. You can interpret those 64 bits as 8 8-bits, 4 16-bits 2 32-bits, or 1 64-bits value. Below is the pictorial representation.
+`Vector64` datatype on the other hand holds data of 64 bits. You can interpret those 64 bits as 8 8-bits, 4 16-bits, 2 32-bits, or 1 64-bits value. Below is the pictorial representation.
 
 ```cmd
                                         ------------- 64-bits -----------
@@ -70,12 +70,12 @@ Note: `V0` above is a register to demonstrate how they are represened in disasse
 
 - `V19.8B` : Holds 8 8-bits values of type `byte` or `sbyte`, They are represented by `Vector64<byte>` and `Vector128<sbyte>`respectively.
 
-Note: `V19` above is a register to demonstrate how they are represened in disassembly of ARM64.
+Note: `V19` above is a register to demonstrate how they are represented in disassembly of ARM64.
 
 ### Data representation
 
 Let us understand how the data is interpreted in various data types. We will take an example of `Vector64` but is applicable to `Vector128` as well.
-Suppose you are operating on 8 8-bits `<11, 12, 13, 14, 15, 16, 17, 18>` . Let us see how they are stored in binary format.
+Suppose you are operating on 8 1-byte data `<11, 12, 13, 14, 15, 16, 17, 18>` . Let us see how they are stored in binary format.
 
 ```cmd
 lane:     0           1         2          3         4           5          6          7 
@@ -115,6 +115,7 @@ lane:                                 0
 data:                          1301839424133073931
 ```
 
+As seen above, in SIMD nomenclature, `lane` is often used as an alternative to `index` of an element inside the vector.
 
 ### APIs examples
 
@@ -220,7 +221,7 @@ See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.run
 ------
 `5. T GetElement<T>(this Vector64<T> vector, int index)`
 
-Gets element from `vector` at specified `index`.
+Gets element at specified `index` from `vector`.
 
 ```csharp
 Vector64<byte> inputs = Vector64.Create((byte)11, 12, 13, 14, 15, 16, 17, 18);
@@ -398,6 +399,6 @@ Console.WriteLine(newly);
 
 See MSDN reference [here](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.intrinsics.vector128.withupper?view=netcore-3.1).
 
-SIMD is very powerful for algorithms that does vectorized operations. I will talk about hardware intrisic APIs where these datatypes are used in future blog.
+SIMD is very powerful for algorithms that does vectorized operations. I will talk about hardware intrinsic APIs where these datatypes are used in future blogs.
 
 Namaste!
