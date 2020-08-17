@@ -1,1 +1,0 @@
-efforts to spend intrinsify ARM64 performance

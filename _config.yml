@@ -1,18 +1,18 @@
 # --- Basic options --- #
 
 # Name of website
-title: Kunal S. Pathak's blogs
+title: Priyanka's blogs
 
 # Short description of your site
 description: A virtual proof that I'm awesome
 
 # Your name to show in the footer
-author: Kunal S. Pathak
+author: Priyanka N. Shinde
 
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  About Me: "aboutme"
+  # About Me: "aboutme"
   Resources:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
     - Learn markdown: "https://www.markdowntutorial.com/"
@@ -22,7 +22,7 @@ navbar-links:
 
 # Image to show in the navigation bar - works best with a square image
 # Remove this parameter if you don't want an image in the navbar
-avatar: "/assets/img/Kunal-Pathak.jpg"
+avatar: "/assets/img/Priyanka-Shinde.jpg"
 
 # By default, the image is cut into a circle. You can disable this behaviour here.
 round-avatar: true
@@ -38,13 +38,13 @@ round-avatar: true
 # Uncomment the links you want to show and add your information to each one.
 # If you don't want to show a link to an RSS feed, set rss to "false".
 social-network-links:
-  email: "kunalspathak5@gmail.com"
+  email: "priyankakpathak@hotmail.com"
   # facebook: deanattali
-  github: kunalspathak
-  twitter: kuxmlp
+  github: priyankakpathak
+  # twitter: kuxmlp
   rss: true
 #  reddit: yourname
-  linkedin: kunalpathak
+  linkedin: priyankakunalpathak
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
@@ -142,9 +142,9 @@ footer-link-col: "#404040"
 # in the "siteKey" and "secret" parameters below and also in `staticman.yml`.
 # See more details at https://staticman.net/
 staticman:
-  repository : kunalspathak/kunalspathak.github.io # GitHub username/repository eg. "daattali/beautiful-jekyll"
+  repository : priyankakpathak/priyankakpathak.github.io # GitHub username/repository eg. "daattali/beautiful-jekyll"
   branch     : master # If you're not using `master` branch, then you also need to update the `branch` parameter in `staticman.yml`
-  endpoint   : https://kunalspathak.herokuapp.com/v2/entry/ # URL of your own deployment, with a trailing slash (will fallback to a public GitLab instance) eg. https://<your-api>/v3/entry/github/
+  endpoint   : https://priyankakpathak.herokuapp.com/v2/entry/ # URL of your own deployment, with a trailing slash (will fallback to a public GitLab instance) eg. https://<your-api>/v3/entry/github/
 #  reCaptcha:
 #    siteKey  : # Use your own site key, you need to apply for one on Google
 #    secret   : # ENCRYPT your password by going to https://staticman3.herokuapp.com/v3/encrypt/<your-site-secret>
