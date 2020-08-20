@@ -1,2 +1,2 @@
 title Jekyll local server
-start bundle exec jekyll serve
+start bundle exec jekyll serve --port 4001 -D -I
