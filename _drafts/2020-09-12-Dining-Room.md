@@ -6,21 +6,32 @@ tags: [interior design, living room]
 comments: true
 ---
 
-Welcome to my dining room. It is a big bright room that can be seen from most of our rooms on the main floor. Today, I will start with all the key elements that I brought into this room to make it feel upscale, where we love to have dinner with our family and friends. 
+Welcome to my dining room. It is a big and bright room that can be seen from most of the other rooms on the main floor. Today, I will start with all the key elements that I brought into this room to make it feel upscale, where we love to have dinner with our family and friends. 
 
-[![demo img]({{ site.url }}/assets/img/dining-room/pic (23).jpeg)]({{ site.url }}/assets/img/dining-room/pic (23).jpeg)
+[![demo img]({{ site.url }}/assets/img/dining-room/pic (19).jpeg)]({{ site.url }}/assets/img/dining-room/pic (19).jpeg)
 
 ## Walls
 
-When I started designing this room, I toyed paintings for the walls and landed on the two rose paintings. I am glad I painted them because they fit nicely with our dining room. This room is directly off the living room and can be seen from the front door as well as the family room and kitchen, it needed to have something that was interesting on the walls. If you have seen my [last blog about the living room](../2020-08-20-Living-Room), I had painting and panels going on the walls. I wanted to bring that simplicity into the dining room.
+When I started designing this room, I toyed paintings for the walls and landed on the two rose paintings. I am glad I painted them because they fit perfectly in our dining room. This room is directly off the living room and can be seen from the front door as well as the family room and kitchen, it needed to have something that was interesting on the walls. If you have seen my [last blog about the living room](../2020-08-20-Living-Room), I had painting and panels going on the walls. I wanted to bring that simplicity into the dining room.
 
-## Mixing Wood tones
+## Mixing wood tones
 
-There are lot of different wood tones in this room and yet, it all seems to work well together. The table has a dark glass top, the chairs are stained rosewood. [Rosewood](https://en.wikipedia.org/wiki/Rosewood) is richly hued timber wood. My dining set is from India. People often get scared mixing wood tones, but my rule is if they sit within tonal family and have similar finish, they can work together in the room.
+There are lot of different wood tones in this room and yet, it all seems to work well together. My dining table from India, has a dark glass top, the chairs are stained rosewood. [Rosewood](https://en.wikipedia.org/wiki/Rosewood) is richly hued timber wood. People often are hesitant in mixing wood tones, but my rule is that if they sit within a tonal family and have a similar finishing, they can work together in that room.
 
 ## Simple impactful styling
 
-We get this question all the time on how to style formal dining table when is set for a dinner? There are lot of different ways to do this that could work for this space. I wanted that the room should feel very calming, so I chose my ZZ plant on the tabletop, and yuca and bamboo on each sides of the window. Because my neighboring living room has lot of plants, I wanted to maintain the same harmony in the dining room. But if you like to make your dining space high and special use objects and a vase and repeat it over and over in various shapes and size down the center of the table. I would not recommend this setup if you have small kids at home. With little hands knocking off things, you can prefer plastic and fabric decors as an alternate option.
+One of the common challenge that people have is to come up with a way to style their formal dining table while it is not setup for dinner. There are different ways that could be done in this space. I wanted this room to feel very calming, so I chose [Rosemary plant](https://wikifarmer.com/rosemary-plant-information/) with my tea set on the tabletop, Yucca and Bamboo on each sides of the window.
+
+[![demo img]({{ site.url }}/assets/img/dining-room/pic (22).jpeg)]({{ site.url }}/assets/img/dining-room/pic (22).jpeg)
+
+I also tried placing [umbrella plant](https://www.gardenloversclub.com/houseplants/umbrella-plant/care-umbrella-plants/) with a silver decor at the center of the table top that GAVE NICe LOOK.  
+
+[![demo img]({{ site.url }}/assets/img/dining-room/pic (27).jpeg)]({{ site.url }}/assets/img/dining-room/pic (27).jpeg)
+
+
+Because my neighboring living room has lot of plants, I wanted to maintain the same harmony in the dining room. But if you like to make your dining space high and special use objects and a vase and repeat it over and over in various shapes and size down the center of the table. I would not recommend this setup if you have small kids at home. With little hands knocking off things, you can prefer plastic and fabric decors as an alternate option.
+
+[ZZ plant](https://en.wikipedia.org/wiki/Zamioculcas)
 
 ## In corporate elements from together room to tie it all together:
 
